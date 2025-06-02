@@ -1,36 +1,44 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(mapviewer VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.10.0)
+project(MapCompiler VERSION 0.1.0 LANGUAGES C CXX)
+
+add_subdirectory(libs/raylib)
+add_subdirectory(libs/glm)
+add_subdirectory(libs/physfs)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# raylib settings
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
+set(BUILD_GAMES OFF CACHE BOOL "" FORCE) # or games
+set(PHYSFS_TARGETNAME_UNINSTALL OFF CACHE BOOL "Name of 'uninstall' build target" FORCE) # don't build physfs uninstall target
+
+add_executable(MapCompiler
+    src/main.cpp
+    src/FS/FS.cpp
+    src/MapFormat/Face.cpp
+    src/MapFormat/Brush.cpp
+    src/MapFormat/Patch.cpp
+    src/MapFormat/Entity.cpp
+    src/MapFormat/Map.cpp
+    src/MapFormat/Lexer.cpp
+    src/MapFormat/Parser.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib"
+    "${CMAKE_CURRENT_SOURCE_DIR}/libs/glm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/libs/physfs/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
 
 include(CTest)
 enable_testing()
 
-add_executable(mapviewer
-  main.cpp
-  rlImGui/rlImGui.cpp
-  imgui/imgui.cpp
-  imgui/imgui_draw.cpp
-  imgui/imgui_tables.cpp
-  imgui/imgui_widgets.cpp
-  imgui/imgui_demo.cpp
-  rlExtrasC/RLGeoTools.c
-)
-target_link_libraries(mapviewer
-  ${CMAKE_SOURCE_DIR}/lib/libraylib.a
-  opengl32
-  gdi32
-  winmm
-  imm32
-  oleaut32
-  ole32
-)
-target_include_directories(mapviewer PRIVATE
-  ${CMAKE_SOURCE_DIR}/include
-  ${CMAKE_SOURCE_DIR}/rlExtrasC
-  ${CMAKE_SOURCE_DIR}/rlExtrasCPP
-  ${CMAKE_SOURCE_DIR}/imgui
-  ${CMAKE_SOURCE_DIR}/rlImgui
-)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic")
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE physfs-static)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

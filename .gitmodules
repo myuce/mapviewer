@@ -1,0 +1,9 @@
+[submodule "glm"]
+	path = libs/glm
+	url = https://github.com/g-truc/glm
+[submodule "raylib"]
+	path = libs/raylib
+	url = https://github.com/raysan5/raylib
+[submodule "physfs"]
+	path = libs/physfs
+	url = https://github.com/icculus/physfs
